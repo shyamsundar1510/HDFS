@@ -1,0 +1,47 @@
+#HDFS Usecase script step 1 to 10
+
+#question  1
+mkdir -p ~/tmpfolder/install/usecases
+touch ~/tmpfolder/install/usecases/NYSE_2020_06_20.txt
+head -1000 ~/pigdata/NYSE_daily > ~/tmpfolder/install/usecases/NYSE_2020_06_20.txt
+
+#question 2
+touch ~/tmpfolder/install/usecases/NYSE_2020_06_21.txt
+head -2000 ~/pigdata/NYSE_daily | tail -1000 > ~/tmpfolder/install/usecases/NYSE_2021_06_21.txt
+
+#question 3
+hadoop fs -mkdir -p hadoop/Hadoop123/tmp/hdfsusecases
+
+#question 4&5
+hadoop fs -test -d hadoop/Hadoop123/tmp/hdfsusecases
+if [ "$?" = 0 ]
+then
+echo "folder is present"
+else
+echo "folder not created"
+fi
+
+#question 6
+hadoop fs -put ~/tmpfolder/install/usecases/NYSE_2020_06_20.txt hadoop/Hadoop123/tmp/hdfsusecases/NYSE_2020_06_20.txt
+
+#Question 7
+hadoop fs -test -d hadoop/Hadoop123/tmp/hdfsusecases/NYSE_2020_06_20.txt
+if [ "$?" = 0 ]
+then
+echo "folder is present"
+else
+hadoop fs -touchz hadoop/Hadoop123/tmp/hdfsusecases/_SUCCESS
+fi
+
+#Question 8
+hadoop fs -appendToFile ~/tmpfolder/install/usecases/NYSE_2021_06_21.txt hadoop/Hadoop123/tmp/hdfsusecases/NYSE_2020_06_20.txt
+
+#question 9
+hadoop fs -du -s -h hadoop/Hadoop123/tmp/hdfsusecases/NYSE_2020_06_20.txt
+
+#question 10
+hadoop fs -cat hadoop/Hadoop123/tmp/hdfsusecases/NYSE_2020_06_20.txt | wc -l
+
+
+
+ 
